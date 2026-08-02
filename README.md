@@ -1,6 +1,6 @@
 # tcc-infra
 
-Orquestração do TCC — Sistema Inteligente para Licitações.
+Orquestração do TCC - Sistema Inteligente para Licitações.
 
 Sobe PostgreSQL, API e dashboard com um comando. Ponto de entrada do projeto.
 
@@ -25,7 +25,7 @@ cp .env.example .env
 docker compose up -d
 ```
 
-Depois, carregue os dados a partir do `tcc-jobs` (ver README de lá) — os jobs
+Depois, carregue os dados a partir do `tcc-jobs` (ver README de lá) - os jobs
 rodam por CLI, não como serviço.
 
 ## Documentação
