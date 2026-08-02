@@ -1,0 +1,6 @@
+.env
+pgdata/
+
+# Contexto local do Claude Code — não versionado
+CLAUDE.md
+CLAUDE-*.md
