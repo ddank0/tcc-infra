@@ -69,7 +69,21 @@ services:
       postgres:
         condition: service_healthy
 
+  frontend:
+    build:
+      context: ../tcc-frontend
+      target: dev
+    container_name: tcc-frontend
+    volumes:
+      - ../tcc-frontend:/app
+      - frontend-modules:/app/node_modules
+    ports:
+      - "4200:4200"
+    depends_on:
+      - api
+
 volumes:
   pgdata:
   jobs-venv:
   api-vendor:
+  frontend-modules:
