@@ -41,6 +41,35 @@ services:
       postgres:
         condition: service_healthy
 
+  api:
+    build:
+      context: ../tcc-api
+      target: dev
+      args:
+        UID: ${UID:-1000}
+        GID: ${GID:-1000}
+    container_name: tcc-api
+    volumes:
+      - ../tcc-api:/app
+      # vendor é volume nomeado: o diretório do host está vazio e
+      # sobrescreveria o do container.
+      - api-vendor:/app/vendor
+    environment:
+      DB_CONNECTION: pgsql
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_DATABASE: ${POSTGRES_DB}
+      DB_USERNAME: ${POSTGRES_USER}
+      DB_PASSWORD: ${POSTGRES_PASSWORD}
+      APP_ENV: local
+      APP_DEBUG: "true"
+    ports:
+      - "8000:8000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+
 volumes:
   pgdata:
   jobs-venv:
+  api-vendor:
