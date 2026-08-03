@@ -1,6 +1,6 @@
 .DEFAULT_GOAL := help
 .PHONY: help up down logs ps rebuild test test-jobs test-api test-front \
-        lint lint-jobs lint-api lint-front migrate shell-jobs shell-api \
+        lint lint-jobs lint-api lint-front check migrate shell-jobs shell-api \
         shell-front build-prod verify
 
 help:  ## lista os alvos disponíveis
@@ -33,17 +33,21 @@ test-api:  ## phpunit no container da api
 test-front:  ## specs do dashboard
 	docker compose exec frontend npm test -- --watch=false
 
-lint: lint-jobs lint-api lint-front  ## lint das três stacks
+lint: lint-jobs lint-api lint-front  ## lint e análise estática das três stacks
 
 lint-jobs:
 	docker compose exec jobs uv run ruff check .
 	docker compose exec jobs uv run ruff format --check .
+	docker compose exec jobs uv run mypy
 
 lint-api:
 	docker compose exec api ./vendor/bin/pint --test
+	docker compose exec api php -d memory_limit=1G ./vendor/bin/phpstan analyse --no-progress
 
 lint-front:
 	docker compose exec frontend npm run lint
+
+check: lint test  ## tudo que o CI roda: lint, análise estática e testes
 
 migrate:  ## aplica as migrations
 	docker compose exec jobs uv run alembic upgrade head
