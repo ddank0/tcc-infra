@@ -1,7 +1,7 @@
 .DEFAULT_GOAL := help
 .PHONY: help up down logs ps rebuild test test-jobs test-api test-front \
         lint lint-jobs lint-api lint-front check migrate shell-jobs shell-api \
-        shell-front build-prod verify drift
+        shell-front build-prod verify drift arch
 
 help:  ## lista os alvos disponíveis
 	@grep -E '^[a-z-]+:.*?## .*$$' $(MAKEFILE_LIST) \
@@ -39,6 +39,7 @@ lint-jobs:
 	docker compose exec jobs uv run ruff check .
 	docker compose exec jobs uv run ruff format --check .
 	docker compose exec jobs uv run pyright
+	docker compose exec jobs uv run lint-imports
 
 lint-api:
 	docker compose exec api ./vendor/bin/pint --test
@@ -51,6 +52,9 @@ check: lint test  ## tudo que o CI roda: lint, análise estática e testes
 
 migrate:  ## aplica as migrations
 	docker compose exec jobs uv run alembic upgrade head
+
+arch:  ## valida os contratos de arquitetura do núcleo funcional
+	docker compose exec jobs uv run lint-imports
 
 drift:  ## verifica se os modelos divergiram das migrations
 	docker compose exec jobs uv run alembic check
